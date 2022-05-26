@@ -251,7 +251,7 @@ for(let vesselID in AIS){
 }
 if(isCollision) collisionAlarm(true);
 else {
-	const isNotificationsCollision = app.getSelfPath('notifications.collision');
+	const isNotificationsCollision = app.getSelfPath('notifications.danger.collision');
 	if(isNotificationsCollision && isNotificationsCollision.value) collisionAlarm(false);
 	// а иначе оно и так false
 }
