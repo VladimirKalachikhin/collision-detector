@@ -438,7 +438,7 @@ else {
 			{
 				values: [
 					{
-						"path": "notifications.collision",
+						"path": "notifications.danger.collision",
 						"value": null
 					}
 				],
