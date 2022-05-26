@@ -1,6 +1,6 @@
 {
   "name": "collision-detector",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "SignalK server plugin that detects a  risk of collision with other vessels",
   "main": "index.js",
   "author": "Vladimir Kalachikhin",

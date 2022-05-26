@@ -10,7 +10,7 @@
 
 ![модель риска](screenshots/s1.jpeg)<br>
 
-Плагин инициирует событие `notifications.collision` [системы оповещений SignalK ](https://signalk.org/specification/1.7.0/doc/notifications.html), так что какое-то программное обеспечение, реагирующее на это событие, может информировать судоводителя об опасности.  
+Плагин инициирует событие `notifications.danger.collision` [системы оповещений SignalK ](https://signalk.org/specification/1.7.0/doc/notifications.html), так что какое-то программное обеспечение, реагирующее на это событие, может информировать судоводителя об опасности.  
 Например, картплотер [GaladrielMap](https://www.npmjs.com/package/galadrielmap_sk) обозначает потенциально опасные суда значком на карте, и одновременно рисует стрелку в направлении опасности внутри значка, указывающего собственное положение.  
 
 **Внимание! Никакая информация, выданная или не выданная этим плагином, не может служить основанием для действия или бездействия судоводителя.**   
@@ -18,7 +18,7 @@
 Будьте осторожны.
 
 ## Использование
-* В своей программе подпишитесь на `"path": "notifications.collision"` как это описано в документе [Subscription Protocol](https://signalk.org/specification/1.7.0/doc/subscription_protocol.html).  
+* В своей программе подпишитесь на `"path": "notifications.danger.collision"` как это описано в документе [Subscription Protocol](https://signalk.org/specification/1.7.0/doc/subscription_protocol.html).  
 * Читайте сдедующие значения в потоке изменений delta:
 >
 <pre>

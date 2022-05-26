@@ -9,14 +9,14 @@ The plugin tries to determine the possibility of a collision according to the ad
 
 ![collision model](screenshots/s1.jpeg)<br>
 
-The plugin raise a [SignalK `notifications.collision`](https://signalk.org/specification/1.7.0/doc/notifications.html) alarm with a list of uuid vessels that have a risk of collision. Other software can inform the navigator of dangers. For example, the [GaladrielMap](https://www.npmjs.com/package/galadrielmap_sk) highlights such vessels on the map and indicates the direction to them on self cursor.  
+The plugin raise a [SignalK `notifications.danger.collision`](https://signalk.org/specification/1.7.0/doc/notifications.html) alarm with a list of uuid vessels that have a risk of collision. Other software can inform the navigator of dangers. For example, the [GaladrielMap](https://www.npmjs.com/package/galadrielmap_sk) highlights such vessels on the map and indicates the direction to them on self cursor.  
 
 **No information issued or not issued by the plugin can be the basis for the actions or omissions of the navigator.**  
 
 Be careful.
 
 ## Usage
-* Subscribe to `"path": "notifications.collision"` as it described in [Subscription Protocol](https://signalk.org/specification/1.7.0/doc/subscription_protocol.html) document.   
+* Subscribe to `"path": "notifications.danger.collision"` as it described in [Subscription Protocol](https://signalk.org/specification/1.7.0/doc/subscription_protocol.html) document.   
 
 * Read the delta stream for 
 >

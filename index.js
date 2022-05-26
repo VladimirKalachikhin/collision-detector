@@ -414,7 +414,7 @@ if(status) {
 			{
 				values: [
 					{
-						"path": "notifications.collision",
+						"path": "notifications.danger.collision",
 						"value": {
 							"method": ["visual","sound"],
 							"state": "alarm",
