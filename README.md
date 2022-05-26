@@ -1,0 +1,48 @@
+[Русское описание](https://github.com/VladimirKalachikhin/collision-detector/blob/master/README.ru-RU.md)  
+# collision-detector [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
+SignalK server plugin that detects a  risk of collision with other vessels.
+<div style='float:right;'><a href='https://github.com/VladimirKalachikhin/Galadriel-map/discussions'>Forum</a>
+</div>
+
+## v. 0.0
+The plugin tries to determine the possibility of a collision according to the adopted collision model based on the specified detection distance and the probability of deviations from the course.  
+
+![collision model](screenshots/s1.jpeg)<br>
+
+The plugin raise a [SignalK `notifications.collision`](https://signalk.org/specification/1.7.0/doc/notifications.html) alarm with a list of uuid vessels that have a risk of collision. Other software can inform the navigator of dangers. For example, the [GaladrielMap](https://www.npmjs.com/package/galadrielmap_sk) highlights such vessels on the map and indicates the direction to them on self cursor.  
+
+**No information issued or not issued by the plugin can be the basis for the actions or omissions of the navigator.**  
+
+Be careful.
+
+## Usage
+* Subscribe to `"path": "notifications.collision"` as it described in [Subscription Protocol](https://signalk.org/specification/1.7.0/doc/subscription_protocol.html) document.   
+
+* Read the delta stream for 
+>
+<pre>
+    "value": {  
+        "method": ["visual", "sound"],  
+        "state": "alarm",  
+        "message": "Collision alert!"  
+        "vessels": [  
+            "vessels.urn:mrn:imo:mmsi:269057061",  
+            ...  
+        ],  
+    },
+</pre>
+
+The "value.vessels" is a array of uuid of dangerous vessels.
+
+## Install&configure:
+Install this plugin from SignalK Appstore as **collision-detector** in the usual way.  
+Restart SignalK,  
+Use Server -> Plugin Config menu of SignalK web control panel to start plugin and configure detection distance and timeouts.  
+Press Submit to save changes.  
+
+## Support
+[Discussions](https://github.com/VladimirKalachikhin/Galadriel-map/discussions)
+
+The forum will be more lively if you make a donation [via PayPal](https://paypal.me/VladimirKalachikhin)  at [galadrielmap@gmail.com](mailto:galadrielmap@gmail.com) or at [ЮMoney](https://yasobe.ru/na/galadrielmap)
+
+[Paid personal consulting](https://kwork.ru/it-support/20093939/galadrielmap-installation-configuration-and-usage-consulting)  

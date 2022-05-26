@@ -1,0 +1,38 @@
+{
+  "name": "collision-detector",
+  "version": "0.0.0",
+  "description": "SignalK server plugin that detects a  risk of collision with other vessels",
+  "main": "index.js",
+  "author": "Vladimir Kalachikhin",
+  "license": "CC-BY-SA-4.0",
+  "keywords": [
+	"signalk-node-server-plugin",
+    "signalk-category-ais",
+    "signalk-category-notifications"
+  ],
+  "homepage": "https://github.com/VladimirKalachikhin/collision-detector#readme",
+  "bugs": {
+    "url": "https://github.com/VladimirKalachikhin/collision-detector/issues",
+    "email": "galadrielmap@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladimirKalachikhin/collision-detector.git"
+  },
+  "funding": [
+    {
+      "type": "individual",
+      "url": "https://paypal.me/VladimirKalachikhin"
+    },
+    {
+      "type": "individual",
+      "url": "https://yasobe.ru/na/galadrielmap"
+    }
+  ],
+  "files": [
+    "screenshots/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
