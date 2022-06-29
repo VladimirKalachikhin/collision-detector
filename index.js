@@ -37,12 +37,14 @@ var unsubscribes = []; 	// массив функций, которые отпи�
 
 ////////////////
 plugin.start = function (options, restartPlugin) {
-const self = app.getSelfPath('mmsi');
-let selfContext;
-let AIS = {};
-let collisions = [];
-//let collisionSegments = {};	// пересекающиеся отрезки, в тестовых целях
-let isCollision = false;
+let self;
+let selfContext = app.getSelfPath('uuid');
+if(!selfContext) self = app.getSelfPath('mmsi');	// костыль на предмет https://github.com/SignalK/signalk-server/issues/1447
+var AIS = {};
+var collisions;
+/////////////////////////// collisionDetector test ///////////////////////////////
+//let collisionSegments;	// пересекающиеся отрезки, в тестовых целях
+/////////////////////////// end collisionDetector test ///////////////////////////////
 //app.debug('self',self,app.getSelfPath('navigation.datetime'));
 
 // Подписка на изменение положения всех судов
@@ -124,6 +126,7 @@ delta.updates.forEach(update => {
 			if(!AIS[delta.context].datetime) AIS[delta.context].timestamp = Date.parse(update.timestamp); 	// milliseconds
 			/*
 			// Будем определь возможность столкновения только при изменении координат
+			// однако, повороты отдельно, и если не пересчитывать на каждый поворот -- так себе получается
 			// Определим координаты точек опасной зоны и координаты объемлющего
 			// горизонтального прямоугольника для этого судна
 			updCollisionArea(delta.context);	// 
@@ -133,9 +136,7 @@ delta.updates.forEach(update => {
 			}
 			else {
 				// Определим возможность столкновения этого судна с нами
-				isCollision = false;
-				chkCollision(delta.context);
-				if(isCollision) collisionAlarm(true);
+				if(chkCollision(delta.context)) collisionAlarm(true);
 			}
 			*/
 			break;
@@ -176,9 +177,7 @@ delta.updates.forEach(update => {
 		}
 		else {
 			// Определим возможность столкновения этого судна с нами
-			isCollision = false;
-			chkCollision(delta.context);
-			if(isCollision) collisionAlarm(true);
+			if(chkCollision(delta.context)) collisionAlarm(true);
 		}
 
 	});
@@ -187,6 +186,7 @@ delta.updates.forEach(update => {
 }; 	// end function doOnValue
 // Конец подписки на изменение положения всех судов
 
+/*////////////////////////// collisionDetector test ///////////////////////////////
 // Отладочный сервер
 app.get(`/${plugin.id}/allvessels/`, function(request, response) {	
 	response.json(AIS);
@@ -194,6 +194,7 @@ app.get(`/${plugin.id}/allvessels/`, function(request, response) {
 app.get(`/${plugin.id}/collisions/`, function(request, response) {	
 	response.json(collisions);
 });
+/*////////////////////////// end collisionDetector test ///////////////////////////////
 
 
 
@@ -237,9 +238,11 @@ AIS[vesselID].squareArea = {topLeft: {longitude: Math.min.apply(null,longs), lat
 
 function chkCollisions(){
 // Определим возможность столкновения нас со всеми судами
-collisions = [];
+collisions = {};
+/////////////////////////// collisionDetector test ///////////////////////////////
 //collisionSegments = {}; 	// объект для тестовых целей
-isCollision = false;
+/////////////////////////// end collisionDetector test ///////////////////////////////
+let isCollision = false;
 for(let vesselID in AIS){
 	if(vesselID === selfContext) continue;
 	if((Date.now()-AIS[vesselID].timestamp)>(options.timeouts.PosFreshBefore*1000)){
@@ -247,9 +250,9 @@ for(let vesselID in AIS){
 		delete AIS[vesselID];
 		continue;
 	}
-	chkCollision(vesselID);
+	if(chkCollision(vesselID)) isCollision = true;
 }
-if(isCollision) collisionAlarm(true);
+if(isCollision) collisionAlarm(true);	// хотя бы одна цель AIS
 else {
 	const isNotificationsCollision = app.getSelfPath('notifications.danger.collision');
 	if(isNotificationsCollision && isNotificationsCollision.value) collisionAlarm(false);
@@ -270,7 +273,7 @@ AIS[selfContext].squareArea.topLeft.latitude
 AIS[selfContext].squareArea.bottomRight.latitude
 */
 //app.debug('squareArea:',AIS[vesselID].squareArea);
-if(!selfContext || !AIS[vesselID].squareArea || !AIS[selfContext].squareArea) return;	// оно не сразу
+if(!selfContext || !AIS[vesselID].squareArea || !AIS[selfContext].squareArea) return false;	// оно не сразу
 // Проверяем пересечение прямоугольных областей
 if(
 	AIS[vesselID].squareArea.topLeft.longitude > AIS[selfContext].squareArea.bottomRight.longitude
@@ -279,7 +282,7 @@ if(
 	|| AIS[vesselID].squareArea.bottomRight.latitude > AIS[selfContext].squareArea.topLeft.latitude
 ) {
 	//if(collisions.includes(vesselID)) {	// считаем, что собственное положение изменяется достаточно часто, а при этом массив collisions обнуляется.
-	return;	// эти области не пересекаются
+	return false;	// эти области не пересекаются
 }
 // Области пересекаются -- определим общий горизонтальный прямоугольник
 const unitedSquareArea = {
@@ -293,12 +296,11 @@ const unitedSquareArea = {
 	}
 };	// 
 //app.debug('unitedSquareArea:',unitedSquareArea);
-/*//////////////////////////////////////////////////
-// для тестовых целей:
+/*////////////////////////// collisionDetector test ///////////////////////////////
 if(!collisionSegments[vesselID]) collisionSegments[vesselID] = {};
 if(!collisionSegments[vesselID].unitedSquareAreas) collisionSegments[vesselID].unitedSquareAreas = [];
 collisionSegments[vesselID].unitedSquareAreas.push(unitedSquareArea);
-//////////////////////////////////////////////////*/
+/*////////////////////////// end collisionDetector test ///////////////////////////////
 
 // Пересчитаем координаты точек collisionArea относительно общего прямоугольника,
 // от верхнего левого угла, в метрах
@@ -336,8 +338,7 @@ doIntersection: {
 	}
 }
 
-/*//////////////////////////////////////////////////
-// для тестовых целей:
+/*////////////////////////// collisionDetector test ///////////////////////////////
 if(isIntersection){
 	if(!collisionSegments[vesselID]) collisionSegments[vesselID] = {};
 	if(!collisionSegments[vesselID].segments) collisionSegments[vesselID].segments = [];
@@ -346,7 +347,7 @@ if(isIntersection){
 		[AIS[vesselID].collisionArea[j],AIS[vesselID].collisionArea[nextJ]]
 	]);
 }
-//////////////////////////////////////////////////*/
+/*////////////////////////// end collisionDetector test ///////////////////////////////
 
 // Возможно, вся область вероятного нахождения цели лежит внутри области
 // нашего вероятного нахождения?
@@ -359,15 +360,14 @@ if(!isIntersection){
 			};
 		};
 		isIntersection = true;	// все точки лежат внутри треугольника		
-		/*//////////////////////////////////////////////////
-		// для тестовых целей:
+		/*////////////////////////// collisionDetector test ///////////////////////////////
 		if(!collisionSegments[vesselID]) collisionSegments[vesselID] = {};
 		if(!collisionSegments[vesselID].segments) collisionSegments[vesselID].segments = [];
 		collisionSegments[vesselID].segments.push([
 			[AIS[vesselID].collisionArea[0],AIS[vesselID].collisionArea[1]],
 			[AIS[vesselID].collisionArea[2],AIS[vesselID].collisionArea[0]]
 		]);
-		//////////////////////////////////////////////////*/		
+		/*////////////////////////// end collisionDetector test ///////////////////////////////
 	}
 };
 // Возможно, вся область нашего вероятного нахождения лежит внутри области
@@ -382,28 +382,25 @@ if(!isIntersection){
 		};
 		isIntersection = true;	// все точки лежат внутри треугольника
 	}
-	/*//////////////////////////////////////////////////
-	// для тестовых целей:
+	/*////////////////////////// collisionDetector test ///////////////////////////////
 	if(!collisionSegments[vesselID]) collisionSegments[vesselID] = {};
 	if(!collisionSegments[vesselID].segments) collisionSegments[vesselID].segments = [];
 	collisionSegments[vesselID].segments.push([
 		[AIS[selfContext].collisionArea[0],AIS[selfContext].collisionArea[1]],
 		[AIS[selfContext].collisionArea[2],AIS[selfContext].collisionArea[0]]
 	]);
-	//////////////////////////////////////////////////*/
+	/*////////////////////////// end collisionDetector test ///////////////////////////////
 };
 
-if(!isIntersection) return;	// ни одна пара отрезков внутри объединённой области не пересекается
+if(!isIntersection) return false;	// ни одна пара отрезков внутри объединённой области не пересекается
 
-//if(vesselID == 'vessels.urn:mrn:imo:mmsi:269057061'){
+//if(vesselID == 'vessels.urn:mrn:imo:mmsi:244690773'){
 //	app.debug('isIntersection with',vesselID,isIntersection,'отрезки',i,j);
 //}
 // Пересечение принятых областей равной вероятности нахождения судов имеется
-if(!collisions.includes(vesselID)) {
-	collisions.push(vesselID);
-	isCollision = true;
-}
+collisions[vesselID] = {"lon":AIS[vesselID].position.longitude,"lat":AIS[vesselID].position.latitude};	// в формате Leaflet
 
+return true; 
 } // end function chkCollision
 
 function collisionAlarm(status=false){
@@ -418,10 +415,12 @@ if(status) {
 						"value": {
 							"method": ["visual","sound"],
 							"state": "alarm",
-							"message": "Collision alert!",
+							"message": "Collision danger!",
 							"source": plugin.id,
 							"vessels": collisions,
-							//"collisionSegments": collisionSegments
+							/*////////////////////////// end collisionDetector test ///////////////////////////////
+							"collisionSegments": collisionSegments
+							/*////////////////////////// collisionDetector test ///////////////////////////////
 						},
 					}
 				],

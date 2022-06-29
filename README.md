@@ -4,14 +4,14 @@ SignalK server plugin that detects a  risk of collision with other vessels.
 <div style='float:right;'><a href='https://github.com/VladimirKalachikhin/Galadriel-map/discussions'>Forum</a>
 </div>
 
-## v. 0.0
+## v. 0.1
 The plugin tries to determine the possibility of a collision according to the adopted collision model based on the specified detection distance and the probability of deviations from the course.  
 
 ![collision model](screenshots/s1.jpeg)<br>
 
-The plugin raise a [SignalK `notifications.danger.collision`](https://signalk.org/specification/1.7.0/doc/notifications.html) alarm with a list of uuid vessels that have a risk of collision. Other software can inform the navigator of dangers. For example, the [GaladrielMap](https://www.npmjs.com/package/galadrielmap_sk) highlights such vessels on the map and indicates the direction to them on self cursor.  
+The plugin raise a [SignalK `notifications.danger.collision`](https://signalk.org/specification/1.7.0/doc/notifications.html) alarm with a list of uuid of vessels that have a risk of collision. Other software can inform the navigator of dangers. For example, the [GaladrielMap](https://www.npmjs.com/package/galadrielmap_sk) highlights such vessels on the map and indicates the direction to them on self cursor.  
 
-**No information issued or not issued by the plugin can be the basis for the actions or omissions of the navigator.**  
+**No information issued or not issued by the plugin can be the basis for the actions or inaction of the navigator.**  
 
 Be careful.
 
@@ -24,15 +24,15 @@ Be careful.
     "value": {  
         "method": ["visual", "sound"],  
         "state": "alarm",  
-        "message": "Collision alert!"  
-        "vessels": [  
-            "vessels.urn:mrn:imo:mmsi:269057061",  
+        "message": "Collision danger!"  
+        "vessels": {  
+            "vessels.urn:mrn:imo:mmsi:123456789":{"lat":...,"lon":...},  
             ...  
-        ],  
+        },  
     },
 </pre>
 
-The "value.vessels" is a array of uuid of dangerous vessels.
+The "value.vessels" is an array of uuid and positions of dangerous vessels.
 
 ## Install&configure:
 Install this plugin from SignalK Appstore as **collision-detector** in the usual way.  
