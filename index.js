@@ -273,7 +273,8 @@ AIS[selfContext].squareArea.topLeft.latitude
 AIS[selfContext].squareArea.bottomRight.latitude
 */
 //app.debug('squareArea:',AIS[vesselID].squareArea);
-if(!selfContext || !AIS[vesselID].squareArea || !AIS[selfContext].squareArea) return false;	// оно не сразу
+// как я ненавижу этот дебильный javascript!
+if(!selfContext || !AIS[vesselID] || !AIS[vesselID].squareArea || !AIS[selfContext] || !AIS[selfContext].squareArea) return false;	// оно не сразу
 // Проверяем пересечение прямоугольных областей
 if(
 	AIS[vesselID].squareArea.topLeft.longitude > AIS[selfContext].squareArea.bottomRight.longitude
