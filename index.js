@@ -40,6 +40,9 @@ plugin.start = function (options, restartPlugin) {
 let self;
 let selfContext = app.getSelfPath('uuid');
 if(!selfContext) self = app.getSelfPath('mmsi');	// костыль на предмет https://github.com/SignalK/signalk-server/issues/1447
+// идентификатор будет без SignalK's пути, каким бы он ни был,
+// а то этот путь слишком часто меняется с версией SignalK
+if(selfContext) selfContext = selfContext.split('.').pop();	
 var AIS = {};
 var collisions;
 /////////////////////////// collisionDetector test ///////////////////////////////
@@ -114,6 +117,9 @@ function doOnValue(delta){
 //app.debug('navigation.datetime',app.getSelfPath('navigation.datetime'));
 delta.updates.forEach(update => {
 	//app.debug(update.source,update.timestamp);
+	//app.debug('[doOnValue]','selfContext=',selfContext);
+	//app.debug('[doOnValue]','delta.context=',delta.context);
+	delta.context = delta.context.split('.').pop();	// идентификатор без пути
 	let timestamp = update.timestamp;	
 	update.values.forEach(value => {	// если подписка только на координаты -- здесь будут только координаты
 		//app.debug(value);
