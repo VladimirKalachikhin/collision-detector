@@ -4,7 +4,7 @@ SignalK server plugin that detects a  risk of collision with other vessels.
 <div style='float:right;'><a href='https://github.com/VladimirKalachikhin/Galadriel-map/discussions'>Forum</a>
 </div>
 
-## v. 0.1
+## v. 0.2
 The plugin tries to determine the possibility of a collision according to the adopted collision model based on the specified detection distance and the probability of deviations from the course.  
 
 ![collision model](screenshots/s1.jpeg)<br>
@@ -26,7 +26,7 @@ Be careful.
         "state": "alarm",  
         "message": "Collision danger!"  
         "vessels": {  
-            "vessels.urn:mrn:imo:mmsi:123456789":{"lat":...,"lon":...},  
+            "vessels.urn:mrn:imo:mmsi:123456789":{"lat":..., "lon":..., "dist":..., "bearing":...},  
             ...  
         },  
     },

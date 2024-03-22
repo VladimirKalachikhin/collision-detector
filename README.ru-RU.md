@@ -4,7 +4,7 @@
 <div style='float:right;'><a href='https://github.com/VladimirKalachikhin/Galadriel-map/discussions'>Форум</a>
 </div>
 
-## v. 0.1
+## v. 0.2
 
 Плагин пытается обнаружить опасность столкновения с другими судами, известными SignalK, на основе принятой модели риска, использующей указанную пользователем дистанцию обнаружения опасности и вероятность отклонений от текущего курса.
 
@@ -27,7 +27,7 @@
         "state": "alarm",  
         "message": "Collision danger!"  
         "vessels": [  
-            "vessels.urn:mrn:imo:mmsi:123456789":{"lat":...,"lon":...},
+            "vessels.urn:mrn:imo:mmsi:123456789":{"lat":..., "lon":..., "dist":..., "bearing":...},  
             ...  
         ],  
     },

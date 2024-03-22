@@ -405,7 +405,12 @@ if(!isIntersection) return false;	// ни одна пара отрезков в�
 //	app.debug('isIntersection with',vesselID,isIntersection,'отрезки',i,j);
 //}
 // Пересечение принятых областей равной вероятности нахождения судов имеется
-collisions[vesselID] = {"lon":AIS[vesselID].position.longitude,"lat":AIS[vesselID].position.latitude};	// в формате Leaflet
+collisions[vesselID] = {
+"lon":AIS[vesselID].position.longitude,
+"lat":AIS[vesselID].position.latitude,
+"bearing":bearing(AIS[selfContext].position,AIS[vesselID].position),
+"dist":equirectangularDistance(AIS[selfContext].position,AIS[vesselID].position)
+};
 
 return true; 
 } // end function chkCollision
@@ -454,7 +459,7 @@ else {
 		]
 	});
 }
-} // end function collisionAlarm
+}; // end function collisionAlarm
 
 
 
@@ -528,6 +533,34 @@ if((m >= 0) && (m <= 1)){
 };
 return false;
 }; // end function isInTriangle_Vector
+
+function bearing(latlng1, latlng2) {
+/* возвращает азимут c точки 1 на точку 2 */
+//console.log(latlng1,latlng2)
+const rad = Math.PI/180;
+let lat1,lat2,lon1,lon2;
+if(latlng1.lat) lat1 = latlng1.lat * rad;
+else lat1 = latlng1.latitude * rad;
+if(latlng2.lat) lat2 = latlng2.lat * rad;
+else lat2 = latlng2.latitude * rad;
+if(latlng1.lng) lon1 = latlng1.lng * rad;
+else if(latlng1.lon) lon1 = latlng1.lon * rad;
+else lon1 = latlng1.longitude * rad;
+if(latlng2.lng) lon2 = latlng2.lng * rad;
+else if(latlng2.lon) lon2 = latlng2.lon * rad;
+else lon2 = latlng2.longitude * rad;
+//console.log('lat1=',lat1,'lat2=',lat2,'lon1=',lon1,'lon2=',lon2)
+
+let y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+let x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+//console.log('x',x,'y',y)
+
+let bearing = ((Math.atan2(y, x) * 180 / Math.PI) + 360) % 360;
+if(bearing >= 360) bearing = bearing-360;
+
+return bearing;
+} // end function bearing
+
 
 }; // end plugin.start
 
