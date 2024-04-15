@@ -1,5 +1,5 @@
 [Русское описание](https://github.com/VladimirKalachikhin/collision-detector/blob/master/README.ru-RU.md)  
-# collision-detector [![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
+# collision-detector [![License: CC BY-NC-SA 4.0](screenshots/Cc-by-nc-sa_icon.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)
 SignalK server plugin that detects a  risk of collision with other vessels.
 <div style='float:right;'><a href='https://github.com/VladimirKalachikhin/Galadriel-map/discussions'>Forum</a>
 </div>

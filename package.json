@@ -1,10 +1,10 @@
 {
   "name": "collision-detector",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "SignalK server plugin that detects a  risk of collision with other vessels",
   "main": "index.js",
   "author": "Vladimir Kalachikhin",
-  "license": "CC-BY-SA-4.0",
+  "license": "CC BY-NC-SA 4.0",
   "keywords": [
 	"signalk-node-server-plugin",
     "signalk-category-ais",
