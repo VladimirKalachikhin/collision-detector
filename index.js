@@ -113,12 +113,13 @@ app.subscriptionmanager.subscribe(
 
 // Обработчик сообщений подписки
 function doOnValue(delta){	
-//app.debug(delta.context);
+//app.debug('Новое сообщение:',delta);
 //app.debug('navigation.datetime',app.getSelfPath('navigation.datetime'));
-delta.updates.forEach(update => {
+for(const update of delta.updates) {
 	//app.debug(update.source,update.timestamp);
 	//app.debug('[doOnValue]','selfContext=',selfContext);
 	//app.debug('[doOnValue]','delta.context=',delta.context);
+	if(!update.values) continue;	// там может быть обновление meta, а не данных
 	delta.context = delta.context.split('.').pop();	// идентификатор без пути
 	let timestamp = update.timestamp;	
 	update.values.forEach(value => {	// если подписка только на координаты -- здесь будут только координаты
@@ -187,7 +188,7 @@ delta.updates.forEach(update => {
 		}
 
 	});
-});
+};
 //app.debug(AIS);
 }; 	// end function doOnValue
 // Конец подписки на изменение положения всех судов
